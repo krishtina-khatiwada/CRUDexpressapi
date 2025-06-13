@@ -17,7 +17,7 @@ db.run(sql, [Task, Status], function (err) {
     if (err) {
       console.error("DB Error:", err);
       return res.status(500).json({
-        status: 300,
+        status: 500,
         success: false,
         error: err.message
       });
@@ -25,7 +25,7 @@ db.run(sql, [Task, Status], function (err) {
 
     console.log("Successful input", Task, Status);
     return res.status(201).json({
-      status: 200,
+      status: 201,
       success: true,
     });
   });
@@ -33,13 +33,10 @@ db.run(sql, [Task, Status], function (err) {
 app.get('/task',(req,res)=>{
     sql=`SELECT * FROM task`;
     try {
-        /* const queryObject = url.parse(req.url, true ).query;
-        if (queryObject.field && queryObject.type)
-            sql +=  `WHERE ${queryObject.field} LIKE '%${queryObject.type}%'`; */
         db.all(sql,[],(err,rows)=>{
-            if (err) return res.json({ status:300, success:false, error:err});
+            if (err) return res.json({ status:500, success:false, error:err});
 
-            if(rows.length<1) return res.json({ status:300, success:false, error:"no match"});
+            if(rows.length<1) return res.json({ status:404, success:false, error:"no match"});
 
             return res.json({status:200, data:rows, success:true});
         })
@@ -50,7 +47,7 @@ app.get('/task',(req,res)=>{
         });
     }
 })
-app.put('/task/:id',(req,res)=>{
+app.put('/task/:id',(req,res)=>{   //put only verrides the existing resource, post will create a new resource. we can send multiple request in put and it'll count as a single request but post will create a new resource each time.
     sql=`UPDATE task SET Task=?, Status=? WHERE id= ?`;
     const {Task, Status}=req.body;
     const id =req.params.id;
@@ -58,13 +55,13 @@ app.put('/task/:id',(req,res)=>{
         if (err) {
             console.error("DB Error:", err);
             return res.status(500).json({
-                status: 300,
+                status: 500,
                 success: false,
                 error: err.message
             });
         }
         console.log("updated successfully");
-        return res.status(201).json({
+        return res.status(200).json({
             status: 200,
             success: true,
         });
@@ -77,14 +74,14 @@ db.run(sql,req.params.id, function(err){
     if(err){
         console.error("DB Error:", err);
         return res.status(500).json({
-            status: 300,
+            status: 500,
             success: false,
             error: err.message
         });
 
     }
     console.log("Deleted successfully");
-    return res.status(201).json({
+    return res.status(200).json({
         status: 200,
         success: true,
     });
