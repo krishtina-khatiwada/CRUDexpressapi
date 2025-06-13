@@ -16,8 +16,8 @@ app.post('/task', (req, res) => {
 db.run(sql, [Task, Status], function (err) {
     if (err) {
       console.error("DB Error:", err);
-      return res.status(500).json({
-        status: 500,
+      return res.status(400).json({
+        status: 400, //bad request
         success: false,
         error: err.message
       });
@@ -42,20 +42,20 @@ app.get('/task',(req,res)=>{
         })
     } catch (error) {
         return res.json({
-            status:404, //request not found 
+            status:404, //request not found
             success:false,
         });
     }
 })
-app.put('/task/:id',(req,res)=>{   //put only verrides the existing resource, post will create a new resource. we can send multiple request in put and it'll count as a single request but post will create a new resource each time.
+app.put('/task/:id',(req,res)=>{   //put only overrides the existing resource, post will create a new resource. we can send multiple request in put and it'll count as a single request but post will create a new resource each time.
     sql=`UPDATE task SET Task=?, Status=? WHERE id= ?`;
     const {Task, Status}=req.body;
     const id =req.params.id;
     db.run(sql,[Task,Status,id], function (err){
         if (err) {
             console.error("DB Error:", err);
-            return res.status(500).json({
-                status: 500,
+            return res.status(404).json({
+                status: 404, //requested id not found
                 success: false,
                 error: err.message
             });
@@ -73,8 +73,8 @@ app.delete('/task/:id',(req,res)=>{
 db.run(sql,req.params.id, function(err){
     if(err){
         console.error("DB Error:", err);
-        return res.status(500).json({
-            status: 500,
+        return res.status(404).json({
+            status: 404, //requested id not found
             success: false,
             error: err.message
         });
