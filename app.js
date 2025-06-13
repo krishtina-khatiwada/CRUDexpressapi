@@ -42,7 +42,7 @@ app.get('/task',(req,res)=>{
         })
     } catch (error) {
         return res.json({
-            status:400,
+            status:404, //request not found 
             success:false,
         });
     }
