@@ -62,7 +62,7 @@ app.get('/task',(req,res)=>{
         return res.json({
             status:500,
             success:false,
-            message: "server error"
+            message: err.message
         });
     }
 })
@@ -98,7 +98,7 @@ app.put('/task/:id',(req,res)=>{   //put only overrides the existing resource, p
             return res.status(500).json({
                 status: 500, //internal server error
                 success: false,
-                error: "internal server error"
+                error: err.message
             });
         }
         console.log("updated successfully");
